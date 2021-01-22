@@ -1,0 +1,8 @@
+.layout {
+  flex: 1 0 auto;
+}
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
