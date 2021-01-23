@@ -1,0 +1,9 @@
+.navbar {
+  display: flex;
+  list-style: none;
+}
+.navlink {
+  text-decoration: none;
+  color: black;
+  padding: 5px;
+}
