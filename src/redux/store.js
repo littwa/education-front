@@ -1,44 +1,44 @@
-import { configureStore } from "@reduxjs/toolkit";
-import authReducrs from "./auth/authReducer";
-import authAction from "./auth/authAction";
-import { connect } from "react-redux";
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
+import storage from "redux-persist/lib/storage";
+import authReducers from "./auth/authReducer";
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
 
-export const store = configureStore({ reducer: { reducer2: authReducrs.reducer2 } });
+const userPersistConfig = {
+  key: "tokens",
+  storage,
+  // whitelist: ["accessToken"],
+};
 
-const Component1 = ({ prop1, dispt1 }) => <button onClick={e => dispt1(3)}>{prop1}| +3</button>;
+export const store = configureStore({
+  reducer: {
+    users: authReducers.allUsers,
+    loading: authReducers.isLoading,
+    user: authReducers.user,
+    tokens: persistReducer(userPersistConfig, authReducers.tokens),
+  },
+  middleware: getDefaultMiddleware({
+    serializableCheck: {
+      ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+    },
+  }),
+});
 
-const mapStateToProps = state => ({ prop1: state.reducer2.x });
-const mapDispatchToProps = { dispt1: authAction.actionCreator2 };
-// const mapDispatchToProps = dispatch => ({ dispt1: val => dispatch(actionCreator1(val)) });
+export const persistor = persistStore(store);
 
-export const WithReduxComponent1 = connect(mapStateToProps, mapDispatchToProps)(Component1);
-
-//===========================================================================
-
-// import { createStore } from "redux";
-// import { connect } from "react-redux";
-
-// const actionCreator1 = value => ({ type: "action-test", payload: value });
-
-// const reducer1 = (state = { x: 0 }, action) => {
-//   console.log(state, action);
-//   switch (action.type) {
-//     case "action-test":
-//       return { x: state.x + action.payload };
-//     default:
-//       return state;
-//   }
-// };
-
-// export const store = createStore(
-//   reducer1,
-//   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
-// );
-
-// const Component1 = ({ prop1, dispt1 }) => <button onClick={e => dispt1(3)}>{prop1}| +3</button>;
-
-// const mapStateToProps = state => ({ prop1: state.x });
-// const mapDispatchToProps = { dispt1: actionCreator1 };
-// // const mapDispatchToProps = dispatch => ({ dispt1: val => dispatch(actionCreator1(val)) });
-
-// export const WithReduxComponent1 = connect(mapStateToProps, mapDispatchToProps)(Component1);
+// const store = configureStore({
+//   reducer: { app, auth: persistReducer(authPersistConfig, auth) },
+//   middleware: getDefaultMiddleware({
+//    serializableCheck: {
+//     ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
+//    }
+//   })
+//  });

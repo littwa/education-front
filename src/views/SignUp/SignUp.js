@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import style from "./SignUp.module.css";
 import axios from "axios";
-axios.defaults.baseURL = "http://localhost:3001";
+import authOperation from "../../redux/auth/authOperation";
+import { connect } from "react-redux";
 
-const SignUp = () => {
+// const FormData = require("form-data");
+
+const SignUp = ({ onSignUp, user }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState("");
   const change = set => e => set(e.target.value);
   const submit = e => {
     e.preventDefault();
@@ -16,19 +19,29 @@ const SignUp = () => {
     formData.append("email", email);
     formData.append("password", password);
     formData.append("avatar", file);
-    console.log(111, formData);
-    console.log(333, file);
-    axios({
-      method: "post",
-      url: "/users",
-      data: formData,
-      headers: { "Content-Type": "multipart/form-data" },
-    })
-      .then(resp => console.log(1, resp))
-      .catch(err => console.log(err.response));
+    // console.log(111, formData);
+    // console.log(333, file);
+    // console.log(555, formData.getAll("avatar"));
+    onSignUp(formData);
+    // axios({
+    //   method: "post",
+    //   url: "/users",
+    //   data: formData,
+    //   headers: { "Content-Type": "multipart/form-data" },
+    // })
+    //   .then(resp => console.log(1, resp))
+    //   .catch(err => console.log(err.response));
+
+    setName("");
+    setEmail("");
+    setPassword("");
+    setFile("");
+    e.target.reset();
   };
 
-  return (
+  return user.status === "Not Verified" ? (
+    <p>A verification link was sent to the mail: {user.email}</p>
+  ) : (
     <form onSubmit={submit} className={style.form}>
       <h4>Register form</h4>
       <input
@@ -60,11 +73,7 @@ const SignUp = () => {
       <input
         type="file"
         name="file"
-        // value={file}
-        onChange={e => {
-          // console.log(typeof e.target.files[0]);
-          setFile(e.target.files[0]);
-        }}
+        onChange={e => setFile(e.target.files[0])}
         accept=".jpg, .jpeg, .png"
         multiple
         className={style.input}
@@ -76,4 +85,8 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+const mapStateToProps = state => ({ user: state.user });
+
+const mapDispatchToProps = { onSignUp: authOperation.signUp };
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

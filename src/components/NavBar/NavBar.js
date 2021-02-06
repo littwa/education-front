@@ -18,7 +18,7 @@ const NavBar = () => {
       <NavLink className={style.navlink} to="/cart">
         Cart
       </NavLink>
-      <NavLink className={style.navlink} to="#">
+      <NavLink className={style.navlink} to="/contacts">
         Contacts
       </NavLink>
       <NavLink className={style.navlink} to="#">

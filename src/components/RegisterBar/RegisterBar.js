@@ -3,7 +3,7 @@ import style from "./RegisterBar.module.css";
 const RegisterBar = () => {
   return (
     <ul className={style.regbar}>
-      <NavLink className={style.navlink} to="#">
+      <NavLink className={style.navlink} to="/sign-in">
         Sign in
       </NavLink>
       <NavLink className={style.navlink} to="/sign-up">
